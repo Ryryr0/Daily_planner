@@ -46,6 +46,13 @@ public class RegistrationFragment extends Fragment {
             }
         });
 
+        binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registrationListener.onRegistrationEntrance();
+            }
+        });
+
         return view;
     }
 
