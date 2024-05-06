@@ -41,7 +41,17 @@ public class RegistrationActivity extends AppCompatActivity
     @Override
     public void onRegistrationComplete(User user) {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onEntranceComplete(User user) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -53,12 +63,6 @@ public class RegistrationActivity extends AppCompatActivity
         fTrans.replace(CONTENT_VIEW_ID, entranceFragment);
         fTrans.addToBackStack(null);
         fTrans.commit();
-    }
-
-    @Override
-    public void onEntranceComplete(User user) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 
     @Override

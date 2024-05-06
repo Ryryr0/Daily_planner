@@ -15,7 +15,7 @@ import com.example.dailyplanner.databinding.FragmentCalendarBinding;
 public class CalendarFragment extends Fragment {
 
     FragmentCalendarBinding binding;
-    CalendarListener calendarListener;
+//    OnSomeEventListener calendarListener;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,18 +33,14 @@ public class CalendarFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            calendarListener = (CalendarListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() +
-                    " must implement OnSomeEventListener");
-        }
-    }
-
-    public interface CalendarListener {
-
-    }
+//    @Override
+//    public void onAttach(@NonNull Context context) {
+//        super.onAttach(context);
+//        try {
+//            calendarListener = (OnSomeEventListener) context;
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException(context.toString() +
+//                    " must implement OnSomeEventListener");
+//        }
+//    }
 }

@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.dailyplanner.databinding.ActivityMainBinding;
 import com.example.dailyplanner.mainpages.eventpage.EventPageFragment;
 import com.example.dailyplanner.mainpages.profile.ProfileFragment;
+import com.example.dailyplanner.mainpages.taskpage.CalendarFragment;
 import com.example.dailyplanner.mainpages.taskpage.TasksPageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -64,5 +65,5 @@ public class MainActivity extends AppCompatActivity {
 
                     return true;
                 }
-            };
+    };
 }
