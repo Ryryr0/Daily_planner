@@ -8,11 +8,12 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.dailyplanner.R;
 import com.example.dailyplanner.databinding.FragmentTasksPageBinding;
 
-public class TasksPageFragment extends Fragment {
+public class TasksPageFragment extends Fragment implements CalendarFragment.OnCalendarListener {
     private FragmentTasksPageBinding binding;
     private CalendarFragment calendarFragment;
     private final int CONTAINER_VIEW_ID = 23232323;
@@ -50,4 +51,8 @@ public class TasksPageFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onCalendarSelected(int year, int month, int dayOfMonth) {
+        Toast.makeText(getContext(), "Дата выбрана1", Toast.LENGTH_SHORT).show();
+    }
 }

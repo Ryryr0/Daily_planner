@@ -15,18 +15,21 @@ import com.example.dailyplanner.databinding.FragmentCalendarBinding;
 public class CalendarFragment extends Fragment {
 
     FragmentCalendarBinding binding;
-//    OnSomeEventListener calendarListener;
+    OnCalendarListener calendarListener;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCalendarBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        calendarListener = (OnCalendarListener) getParentFragment();
+
         binding.calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view,
                                             int year, int month, int dayOfMonth) {
                 // Something do
+                calendarListener.onCalendarSelected(year, month, dayOfMonth);
             }
         });
 
@@ -36,11 +39,15 @@ public class CalendarFragment extends Fragment {
 //    @Override
 //    public void onAttach(@NonNull Context context) {
 //        super.onAttach(context);
-//        try {
-//            calendarListener = (OnSomeEventListener) context;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(context.toString() +
-//                    " must implement OnSomeEventListener");
+//        if (context instanceof OnCalendarListener) {
+//            calendarListener = (OnCalendarListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString() +
+//                    " must implement OnInnerFragmentInteractionListener");
 //        }
 //    }
+
+    public interface OnCalendarListener {
+        public void onCalendarSelected(int year, int month, int dayOfMonth);
+    }
 }
