@@ -1,4 +1,4 @@
-package com.example.dailyplanner;
+package com.example.dailyplanner.anxiliary;
 
 public class User {
     private String lastName, firstName, password;

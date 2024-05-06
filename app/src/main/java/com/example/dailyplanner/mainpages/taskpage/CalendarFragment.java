@@ -1,4 +1,4 @@
-package com.example.dailyplanner;
+package com.example.dailyplanner.mainpages.taskpage;
 
 import android.content.Context;
 import android.os.Bundle;

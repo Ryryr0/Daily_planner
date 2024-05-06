@@ -1,5 +1,6 @@
-package com.example.dailyplanner;
+package com.example.dailyplanner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -9,11 +10,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.dailyplanner.databinding.ActivityMainBinding;
+import com.example.dailyplanner.mainpages.EntranceFragment;
+import com.example.dailyplanner.R;
+import com.example.dailyplanner.mainpages.RegistrationFragment;
+import com.example.dailyplanner.anxiliary.User;
+import com.example.dailyplanner.databinding.ActivityRegistrationBinding;
 
 public class RegistrationActivity extends AppCompatActivity
         implements RegistrationFragment.RegistrationListener, EntranceFragment.EntranceListener {
-    private ActivityMainBinding binding;
+    private ActivityRegistrationBinding binding;
     private RegistrationFragment registrationFragment;
     private EntranceFragment entranceFragment;
     private static final int CONTENT_VIEW_ID = 10101010;
@@ -21,13 +26,8 @@ public class RegistrationActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityRegistrationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         // Creating registration fragment
         binding.fragmentContainerView.setId(CONTENT_VIEW_ID);
@@ -40,7 +40,8 @@ public class RegistrationActivity extends AppCompatActivity
 
     @Override
     public void onRegistrationComplete(User user) {
-        Toast.makeText(this, "Регистрация прошла успешно!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -56,7 +57,8 @@ public class RegistrationActivity extends AppCompatActivity
 
     @Override
     public void onEntranceComplete(User user) {
-        Toast.makeText(this, "Вы вошли!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     @Override

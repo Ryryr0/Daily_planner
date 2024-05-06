@@ -1,4 +1,4 @@
-package com.example.dailyplanner;
+package com.example.dailyplanner.mainpages;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,14 +11,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.dailyplanner.databinding.FragmentRegistrationBinding;
+import com.example.dailyplanner.anxiliary.User;
+import com.example.dailyplanner.databinding.FragmentEntranceBinding;
 
-public class RegistrationFragment extends Fragment {
+public class EntranceFragment extends Fragment {
 
-    private FragmentRegistrationBinding binding;
-    private RegistrationListener registrationListener;
+    private FragmentEntranceBinding binding;
+    private EntranceListener entranceListener;
 
-    public RegistrationFragment() {
+    public EntranceFragment() {
         // Required empty public constructor
     }
 
@@ -26,10 +27,10 @@ public class RegistrationFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentRegistrationBinding.inflate(inflater, container, false);
+        binding = FragmentEntranceBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        binding.buttonRegister.setOnClickListener(new View.OnClickListener() {
+        binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validateUserData()) {
@@ -38,7 +39,7 @@ public class RegistrationFragment extends Fragment {
                     String password = binding.editTextPassword.getText().toString();
 
                     User user = new User(lastName, firstName, password);
-                    registrationListener.onRegistrationComplete(user);
+                    entranceListener.onEntranceComplete(user);
 
                     // Закрытие фрагмента
                     //getParentFragmentManager().popBackStack();
@@ -46,10 +47,10 @@ public class RegistrationFragment extends Fragment {
             }
         });
 
-        binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
+        binding.buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registrationListener.onRegistrationEntrance();
+                entranceListener.onEntranceRegistration();
             }
         });
 
@@ -60,7 +61,7 @@ public class RegistrationFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            registrationListener = (RegistrationListener) context;
+            entranceListener = (EntranceListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() +
                     " must implement OnSomeEventListener");
@@ -77,26 +78,19 @@ public class RegistrationFragment extends Fragment {
         String lastName = binding.editTextLastName.getText().toString();
         String firstName = binding.editTextFirstName.getText().toString();
         String password = binding.editTextPassword.getText().toString();
-        String confirmPassword = binding.editTextConfirmPassword.getText().toString();
 
         if (TextUtils.isEmpty(lastName) || TextUtils.isEmpty(firstName) ||
-                TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
+                TextUtils.isEmpty(password)) {
             // Проверка на пустые поля
             Toast.makeText(getContext(), "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!password.equals(confirmPassword)) {
-            // Проверка на совпадение паролей
-            Toast.makeText(getContext(), "Пароли не совпадают", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         return true;
     }
 
-    public interface RegistrationListener {
-        void onRegistrationComplete(User user);
-        void onRegistrationEntrance();
+    public interface EntranceListener {
+        void onEntranceComplete(User user);
+        void onEntranceRegistration();
     }
 }
