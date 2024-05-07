@@ -1,6 +1,7 @@
 package com.example.dailyplanner.mainpages.taskpage;
 
 import android.content.Context;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,25 +30,39 @@ public class CalendarFragment extends Fragment {
             public void onSelectedDayChange(@NonNull CalendarView view,
                                             int year, int month, int dayOfMonth) {
                 // Something do
-                calendarListener.onCalendarSelected(year, month, dayOfMonth);
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, dayOfMonth);
+                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                String dayOfWeekStr = getDayOfWeekString(dayOfWeek);
+                calendarListener.onCalendarSelected(year, month, dayOfMonth, dayOfWeekStr);
             }
         });
 
         return view;
     }
 
-//    @Override
-//    public void onAttach(@NonNull Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnCalendarListener) {
-//            calendarListener = (OnCalendarListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString() +
-//                    " must implement OnInnerFragmentInteractionListener");
-//        }
-//    }
+    private String getDayOfWeekString(int dayOfWeek) {
+        switch (dayOfWeek) {
+            case Calendar.SUNDAY:
+                return "Воскресенье";
+            case Calendar.MONDAY:
+                return "Понедельник";
+            case Calendar.TUESDAY:
+                return "Вторник";
+            case Calendar.WEDNESDAY:
+                return "Среда";
+            case Calendar.THURSDAY:
+                return "Четверг";
+            case Calendar.FRIDAY:
+                return "Пятница";
+            case Calendar.SATURDAY:
+                return "Суббота";
+            default:
+                return "";
+        }
+    }
 
     public interface OnCalendarListener {
-        public void onCalendarSelected(int year, int month, int dayOfMonth);
+        public void onCalendarSelected(int year, int month, int dayOfMonth, String dayOfWeek);
     }
 }
