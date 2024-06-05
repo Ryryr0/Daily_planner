@@ -37,6 +37,7 @@ android {
 
 dependencies {
 
+    implementation("com.google.code.gson:gson:2.8.9")
     implementation("androidx.fragment:fragment:1.7.0")
     implementation(libs.appcompat)
     implementation(libs.material)

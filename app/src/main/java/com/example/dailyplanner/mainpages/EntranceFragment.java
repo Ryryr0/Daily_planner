@@ -3,6 +3,7 @@ package com.example.dailyplanner.mainpages;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,16 @@ public class EntranceFragment extends Fragment {
 
     private FragmentEntranceBinding binding;
     private EntranceListener entranceListener;
+    private User user;
+
+    private final String MY_TAG = "myTag";
 
     public EntranceFragment() {
         // Required empty public constructor
+    }
+    public EntranceFragment(User user) {
+        Log.d(MY_TAG, user.toString());
+        this.user = user;
     }
 
     @Override
@@ -30,6 +38,11 @@ public class EntranceFragment extends Fragment {
         binding = FragmentEntranceBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        binding.editTextLastName.setText(user.getLastName());
+        binding.editTextFirstName.setText(user.getFirstName());
+        binding.editTextPassword.setText(user.getPassword());
+        binding.rememberMe.setChecked(true);
+
         binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -38,7 +51,7 @@ public class EntranceFragment extends Fragment {
                     String firstName = binding.editTextFirstName.getText().toString();
                     String password = binding.editTextPassword.getText().toString();
 
-                    User user = new User(lastName, firstName, password);
+                    User user = new User(lastName, firstName, password, binding.rememberMe.isChecked());
                     entranceListener.onEntranceComplete(user);
 
                     // Закрытие фрагмента

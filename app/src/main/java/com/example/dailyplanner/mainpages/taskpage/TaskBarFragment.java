@@ -15,7 +15,7 @@ import com.example.dailyplanner.databinding.FragmentTaskBarBinding;
 
 import java.util.ArrayList;
 
-public class TaskBarFragment extends Fragment {
+public class TaskBarFragment extends Fragment implements TasksPageFragment.OnTaskPageListener {
 
     private FragmentTaskBarBinding binding;
 
@@ -39,5 +39,10 @@ public class TaskBarFragment extends Fragment {
         for (int i = 0; i < 6; i++) {
             tasks.add(new Task());
         }
+    }
+
+    @Override
+    public void onTaskPageCreate(int year, int month, int dayOfMonth, String dayOfWeek) {
+
     }
 }

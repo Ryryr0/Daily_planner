@@ -24,6 +24,7 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
     private final int CONTAINER_VIEW_ID = 23232323;
     private final int CONTAINER_LIST_VIEW_ID = 34343434;
     private boolean buttonCalendarFlag = false;
+    OnTaskPageListener onTaskPageListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,6 +78,16 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
 
     @Override
     public void onCalendarSelected(int year, int month, int dayOfMonth, String dayOfWeek) {
+        onTaskPageListener = (OnTaskPageListener) new TasksPageFragment();
+        onTaskPageListener.onTaskPageCreate(year, month, dayOfMonth, dayOfWeek);
+        FragmentTransaction fTrans;
+        fTrans = getChildFragmentManager().beginTransaction();
+        fTrans.replace(CONTAINER_LIST_VIEW_ID, (TasksPageFragment) onTaskPageListener);
+        fTrans.addToBackStack(null);
+        fTrans.commit();
+    }
 
+    public interface OnTaskPageListener {
+        public void onTaskPageCreate(int year, int month, int dayOfMonth, String dayOfWeek);
     }
 }

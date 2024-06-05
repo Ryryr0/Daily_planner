@@ -18,6 +18,7 @@ public class RegistrationFragment extends Fragment {
 
     private FragmentRegistrationBinding binding;
     private RegistrationListener registrationListener;
+    private final String MY_TAG = "myTag";
 
     public RegistrationFragment() {
         // Required empty public constructor
@@ -38,7 +39,7 @@ public class RegistrationFragment extends Fragment {
                     String firstName = binding.editTextFirstName.getText().toString();
                     String password = binding.editTextPassword.getText().toString();
 
-                    User user = new User(lastName, firstName, password);
+                    User user = new User(lastName, firstName, password, binding.rememberMe.isChecked());
                     registrationListener.onRegistrationComplete(user);
 
                     // Закрытие фрагмента
