@@ -44,19 +44,19 @@ public class CalendarFragment extends Fragment {
     private String getDayOfWeekString(int dayOfWeek) {
         switch (dayOfWeek) {
             case Calendar.SUNDAY:
-                return "Воскресенье";
+                return "Вс";
             case Calendar.MONDAY:
-                return "Понедельник";
+                return "Пн";
             case Calendar.TUESDAY:
-                return "Вторник";
+                return "Вт";
             case Calendar.WEDNESDAY:
-                return "Среда";
+                return "Ср";
             case Calendar.THURSDAY:
-                return "Четверг";
+                return "Чт";
             case Calendar.FRIDAY:
-                return "Пятница";
+                return "Пт";
             case Calendar.SATURDAY:
-                return "Суббота";
+                return "Сб";
             default:
                 return "";
         }

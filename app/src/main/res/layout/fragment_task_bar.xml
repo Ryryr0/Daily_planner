@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:padding="16dp"
-        android:text="пн 2024-02-08">
+        android:text="Понедельник\n2024-02-08">
     </TextView>
 
     <ListView

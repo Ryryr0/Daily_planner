@@ -1,7 +1,6 @@
 package com.example.dailyplanner.anxiliary;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dailyplanner.R;
-import com.example.dailyplanner.mainpages.taskpage.Task;
 
 import java.util.ArrayList;
 
@@ -54,7 +52,7 @@ public class TaskListAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.titleTextView)).setText(task.getName());
         ((TextView) view.findViewById(R.id.descriptionTextView)).setText(task.getDescription());
         ((CheckBox) view.findViewById(R.id.checkBox)).setChecked(task.isComplete());
-        ((ImageView) view.findViewById(R.id.iconImageView)).setImageResource(task.getIcon());
+        ((ImageView) view.findViewById(R.id.iconImageView)).setImageResource(R.drawable.ic_notifications_black_24dp);
 
         return view;
     }

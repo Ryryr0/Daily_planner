@@ -1,7 +1,10 @@
 package com.example.dailyplanner.mainpages.taskpage;
 
+import android.icu.util.Calendar;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -13,10 +16,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.dailyplanner.R;
+import com.example.dailyplanner.anxiliary.Task;
 import com.example.dailyplanner.anxiliary.TaskListAdapter;
 import com.example.dailyplanner.databinding.FragmentTasksPageBinding;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Objects;
 
 public class TasksPageFragment extends Fragment implements CalendarFragment.OnCalendarListener {
     private FragmentTasksPageBinding binding;
@@ -24,10 +32,9 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
     private final int CONTAINER_VIEW_ID = 23232323;
     private final int CONTAINER_LIST_VIEW_ID = 34343434;
     private boolean buttonCalendarFlag = false;
-    OnTaskPageListener onTaskPageListener;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentTasksPageBinding.inflate(inflater, container, false);
 
@@ -35,11 +42,7 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
         binding.fragmentContainerTaskPanel.setId(CONTAINER_LIST_VIEW_ID);
         calendarFragment = new CalendarFragment();
 
-        FragmentTransaction fTrans;
-        fTrans = getChildFragmentManager().beginTransaction();
-        fTrans.replace(CONTAINER_LIST_VIEW_ID, new TaskBarFragment());
-        fTrans.addToBackStack(null);
-        fTrans.commit();
+        setCurrentDate();
 
         binding.buttonOpenCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,16 +81,96 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
 
     @Override
     public void onCalendarSelected(int year, int month, int dayOfMonth, String dayOfWeek) {
-        onTaskPageListener = (OnTaskPageListener) new TasksPageFragment();
-        onTaskPageListener.onTaskPageCreate(year, month, dayOfMonth, dayOfWeek);
-        FragmentTransaction fTrans;
-        fTrans = getChildFragmentManager().beginTransaction();
-        fTrans.replace(CONTAINER_LIST_VIEW_ID, (TasksPageFragment) onTaskPageListener);
-        fTrans.addToBackStack(null);
-        fTrans.commit();
+        createTaskBarFragment(year, month, dayOfMonth, dayOfWeek);
     }
 
-    public interface OnTaskPageListener {
-        public void onTaskPageCreate(int year, int month, int dayOfMonth, String dayOfWeek);
+    public void setCurrentDate() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDateTime localDateTime = LocalDateTime.now();
+            String dayOfWeek = "";
+            switch (localDateTime.getDayOfWeek()) {
+                case SUNDAY:
+                    dayOfWeek = "Вс";
+                    break;
+                case MONDAY:
+                    dayOfWeek = "Пн";
+                    break;
+                case TUESDAY:
+                    dayOfWeek = "Вт";
+                    break;
+                case WEDNESDAY:
+                    dayOfWeek = "Ср";
+                    break;
+                case THURSDAY:
+                    dayOfWeek = "Чт";
+                    break;
+                case FRIDAY:
+                    dayOfWeek = "Пт";
+                    break;
+                case SATURDAY:
+                    dayOfWeek = "Сб";
+                    break;
+            }
+            localDateTime = LocalDateTime.now();
+            createTaskBarFragment(
+                    localDateTime.getYear(),
+                    localDateTime.getMonthValue(),
+                    localDateTime.getDayOfMonth(),
+                    dayOfWeek);
+        }
+    }
+
+    private void createTaskBarFragment(int year, int month, int dayOfMonth, String dayOfWeek) {
+        String strMonth = "";
+        switch (month) {
+            case 1:
+                strMonth = "Январь";
+                break;
+            case 2:
+                strMonth = "Февраль";
+                break;
+            case 3:
+                strMonth = "Март";
+                break;
+            case 4:
+                strMonth = "Апрель";
+                break;
+            case 5:
+                strMonth = "Май";
+                break;
+            case 6:
+                strMonth = "Июнь";
+                break;
+            case 7:
+                strMonth = "Июль";
+                break;
+            case 8:
+                strMonth = "Август";
+                break;
+            case 9:
+                strMonth = "Сентябрь";
+                break;
+            case 10:
+                strMonth = "Октябрь";
+                break;
+            case 11:
+                strMonth = "Ноябрь";
+                break;
+            case 12:
+                strMonth = "Декабрь";
+                break;
+
+        }
+        String date = strMonth + "\n" + dayOfWeek + "\n" + dayOfMonth;
+
+        // Take tasks from dataBase
+        ArrayList<Task> taskList = new ArrayList<>();
+
+        FragmentTransaction fTrans;
+        fTrans = getChildFragmentManager().beginTransaction();
+        fTrans.replace(CONTAINER_LIST_VIEW_ID,
+                new TaskBarFragment(date, taskList));
+        fTrans.addToBackStack(null);
+        fTrans.commit();
     }
 }
