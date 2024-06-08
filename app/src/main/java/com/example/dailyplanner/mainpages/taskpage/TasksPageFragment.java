@@ -123,40 +123,40 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
     private void createTaskBarFragment(int year, int month, int dayOfMonth, String dayOfWeek) {
         String strMonth = "";
         switch (month) {
-            case 1:
+            case 0:
                 strMonth = "Январь";
                 break;
-            case 2:
+            case 1:
                 strMonth = "Февраль";
                 break;
-            case 3:
+            case 2:
                 strMonth = "Март";
                 break;
-            case 4:
+            case 3:
                 strMonth = "Апрель";
                 break;
-            case 5:
+            case 4:
                 strMonth = "Май";
                 break;
-            case 6:
+            case 5:
                 strMonth = "Июнь";
                 break;
-            case 7:
+            case 6:
                 strMonth = "Июль";
                 break;
-            case 8:
+            case 7:
                 strMonth = "Август";
                 break;
-            case 9:
+            case 8:
                 strMonth = "Сентябрь";
                 break;
-            case 10:
+            case 9:
                 strMonth = "Октябрь";
                 break;
-            case 11:
+            case 10:
                 strMonth = "Ноябрь";
                 break;
-            case 12:
+            case 11:
                 strMonth = "Декабрь";
                 break;
 

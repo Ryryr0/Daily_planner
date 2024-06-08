@@ -38,10 +38,12 @@ public class EntranceFragment extends Fragment {
         binding = FragmentEntranceBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        binding.editTextLastName.setText(user.getLastName());
-        binding.editTextFirstName.setText(user.getFirstName());
-        binding.editTextPassword.setText(user.getPassword());
-        binding.rememberMe.setChecked(true);
+        if (user != null) {
+            binding.editTextLastName.setText(user.getLastName());
+            binding.editTextFirstName.setText(user.getFirstName());
+            binding.editTextPassword.setText(user.getPassword());
+            binding.rememberMe.setChecked(true);
+        }
 
         binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override

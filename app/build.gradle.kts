@@ -37,6 +37,8 @@ android {
 
 dependencies {
 
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("com.github.yalantis:ucrop:2.2.8")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("androidx.fragment:fragment:1.7.0")
     implementation(libs.appcompat)

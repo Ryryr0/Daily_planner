@@ -8,4 +8,10 @@
     <string name="title_notifications">Notifications</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="edit_photo">Редактировать фото</string>
+    <string name="full_name">Полное имя</string>
+    <string name="email">E-mail адрес</string>
+    <string name="avatar_description">Фото пользователя</string>
+    <string name="save_data">Сохранить измененные данные</string>
 </resources>
