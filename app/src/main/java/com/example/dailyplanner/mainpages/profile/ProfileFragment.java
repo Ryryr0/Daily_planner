@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.dailyplanner.activities.InformationActivity;
 import com.example.dailyplanner.databinding.FragmentProfileBinding;
 import com.yalantis.ucrop.UCrop;
 
@@ -46,6 +48,21 @@ public class ProfileFragment extends Fragment {
         binding.editPhotoButton.setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickImageLauncher.launch(intent);
+        });
+
+        binding.saveDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveChangedData();
+            }
+        });
+
+        binding.infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), InformationActivity.class);
+                startActivity(intent);
+            }
         });
 
         return binding.getRoot();
@@ -83,5 +100,9 @@ public class ProfileFragment extends Fragment {
             final Throwable cropError = UCrop.getError(data);
             // Handle the error if needed
         }
+    }
+
+    private void saveChangedData(){
+        Toast.makeText(getActivity(), "Data was saved", Toast.LENGTH_SHORT).show();
     }
 }

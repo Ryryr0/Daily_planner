@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Аватарка -->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/avatar_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/my_ava"/>
+
+    <!-- Фамилия и инициалы студента -->
+    <TextView
+        android:id="@+id/student_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Королев А.А."
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:paddingBottom="8dp" />
+
+    <!-- Группа -->
+    <TextView
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Группа: ИКБО-03-22"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:paddingBottom="8dp" />
+
+    <!-- Год разработки приложения -->
+    <TextView
+        android:id="@+id/development_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Год разработки: 2024"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:paddingBottom="8dp" />
+
+    <!-- Почта для связи -->
+    <TextView
+        android:id="@+id/contact_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Почта для связи:\natremkor08@gmail.com"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:paddingBottom="8dp" />
+
+</LinearLayout>

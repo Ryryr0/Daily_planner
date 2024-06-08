@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_about_program"
+        android:title="О программе" />
+    <item
+        android:id="@+id/navigation_instruction"
+        android:title="Инструкция" />
+    <item
+        android:id="@+id/navigation_about_author"
+        android:title="Об авторе" />
+</menu>
