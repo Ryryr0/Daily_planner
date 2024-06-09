@@ -35,11 +35,11 @@ public class RegistrationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (validateUserData()) {
-                    String lastName = binding.editTextLastName.getText().toString();
                     String firstName = binding.editTextFirstName.getText().toString();
                     String password = binding.editTextPassword.getText().toString();
+                    String email = binding.editTextEmail.getText().toString();
 
-                    User user = new User(lastName, firstName, password, binding.rememberMe.isChecked());
+                    User user = new User( firstName, password, email, binding.rememberMe.isChecked());
                     registrationListener.onRegistrationComplete(user);
 
                     // Закрытие фрагмента
@@ -69,19 +69,12 @@ public class RegistrationFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
     private boolean validateUserData() {
-        String lastName = binding.editTextLastName.getText().toString();
         String firstName = binding.editTextFirstName.getText().toString();
         String password = binding.editTextPassword.getText().toString();
         String confirmPassword = binding.editTextConfirmPassword.getText().toString();
 
-        if (TextUtils.isEmpty(lastName) || TextUtils.isEmpty(firstName) ||
+        if (TextUtils.isEmpty(firstName) ||
                 TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
             // Проверка на пустые поля
             Toast.makeText(getContext(), "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show();

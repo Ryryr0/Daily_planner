@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.dailyplanner.activities.InformationActivity;
+import com.example.dailyplanner.activities.RegistrationActivity;
 import com.example.dailyplanner.databinding.FragmentProfileBinding;
+import com.google.firebase.auth.FirebaseAuth;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -25,8 +28,10 @@ import java.io.File;
 public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
-    private static final int PICK_IMAGE = 1;
     private static final int UCROP_REQUEST_CODE = UCrop.REQUEST_CROP;
+    private Uri currentImageUri; // Сохраняем текущий Uri изображения
+    private int k = 0;
+    private final String MY_TAG = "myTag";
 
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -34,7 +39,8 @@ public class ProfileFragment extends Fragment {
                 if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
                     if (imageUri != null) {
-                        startCrop(imageUri);
+                        currentImageUri = imageUri; // Сохраняем новый Uri изображения
+                        startCrop(currentImageUri);
                     }
                 }
             });
@@ -65,6 +71,15 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        binding.logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getActivity(), RegistrationActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -73,7 +88,8 @@ public class ProfileFragment extends Fragment {
             return;
         }
 
-        String destinationFileName = "croppedImage.png";
+        String destinationFileName = "croppedImage" + k + ".png";
+        k++;
         Uri destinationUri = Uri.fromFile(new File(requireActivity().getCacheDir(), destinationFileName));
 
         UCrop.Options options = new UCrop.Options();
@@ -93,7 +109,9 @@ public class ProfileFragment extends Fragment {
             if (requestCode == UCROP_REQUEST_CODE) {
                 final Uri resultUri = UCrop.getOutput(data);
                 if (resultUri != null) {
+                    currentImageUri = resultUri; // Обновляем текущий Uri изображения
                     binding.avatarImageView.setImageURI(resultUri);
+                    Log.d(MY_TAG, "New photo was set");
                 }
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {

@@ -78,12 +78,22 @@
         android:inputType="textEmailAddress" />
 
     <Button
-        android:id="@+id/saveDataButton"
+        android:id="@+id/logOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/emailEditText"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="48dp"
+        android:backgroundTint="@color/red"
+        android:text="Выйти из аккаунта" />
+
+    <Button
+        android:id="@+id/saveDataButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logOutButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
         android:text="@string/save_data" />
 
 </RelativeLayout>

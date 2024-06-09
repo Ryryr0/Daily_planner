@@ -2,23 +2,24 @@ package com.example.dailyplanner.activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.dailyplanner.R;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.dailyplanner.R;
+import com.example.dailyplanner.anxiliary.Task;
 import com.example.dailyplanner.databinding.ActivityMainBinding;
 import com.example.dailyplanner.mainpages.eventpage.EventPageFragment;
 import com.example.dailyplanner.mainpages.profile.ProfileFragment;
-import com.example.dailyplanner.mainpages.taskpage.CalendarFragment;
+import com.example.dailyplanner.mainpages.taskpage.CreateTaskFragment;
 import com.example.dailyplanner.mainpages.taskpage.TasksPageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TasksPageFragment.OnCreateNewTask,
+        CreateTaskFragment.OnCreateTask {
     private ActivityMainBinding binding;
     private TasksPageFragment taskPageFragment;
     private EventPageFragment eventPageFragment;
@@ -67,4 +68,27 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
     };
+
+    @Override
+    public void onCreateNewTask(int year, int month, int dayOfMonth) {
+        CreateTaskFragment newFragment = new CreateTaskFragment(year, month, dayOfMonth);
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(CONTAINER_VIEW_ID, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void startFragment(Fragment fragment) {
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(CONTAINER_VIEW_ID, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void onCreateTask(Task task) {
+        // Adding task into data base
+    }
 }

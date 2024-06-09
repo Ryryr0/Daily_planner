@@ -1,38 +1,55 @@
 package com.example.dailyplanner.anxiliary;
 
 public class User {
-    private String lastName, firstName, password;
+    private String id, firstName, password, email;
     boolean rememberMe;
 
-    public User(String lastName, String firstName, String password, boolean rememberMe) {
-        this.lastName = lastName;
+    public User(String firstName, String password, String email, boolean rememberMe) {
         this.firstName = firstName;
         this.password = password;
         this.rememberMe = rememberMe;
+        this.email = email;
+        this.id = "";
     }
 
-    public String getLastName() {
-        return lastName;
+    public User(String id, String firstName, String password, String email, boolean rememberMe) {
+        this.firstName = firstName;
+        this.password = password;
+        this.rememberMe = rememberMe;
+        this.email = email;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public boolean isRememberMe() {
@@ -41,15 +58,5 @@ public class User {
 
     public void setRememberMe(boolean rememberMe) {
         this.rememberMe = rememberMe;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "lastName='" + lastName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", password='" + password + '\'' +
-                ", rememberMe=" + rememberMe +
-                '}';
     }
 }

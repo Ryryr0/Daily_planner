@@ -39,8 +39,7 @@ public class EntranceFragment extends Fragment {
         View view = binding.getRoot();
 
         if (user != null) {
-            binding.editTextLastName.setText(user.getLastName());
-            binding.editTextFirstName.setText(user.getFirstName());
+            binding.editTextEmail.setText(user.getEmail());
             binding.editTextPassword.setText(user.getPassword());
             binding.rememberMe.setChecked(true);
         }
@@ -49,11 +48,10 @@ public class EntranceFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (validateUserData()) {
-                    String lastName = binding.editTextLastName.getText().toString();
-                    String firstName = binding.editTextFirstName.getText().toString();
+                    String email = binding.editTextEmail.getText().toString();
                     String password = binding.editTextPassword.getText().toString();
 
-                    User user = new User(lastName, firstName, password, binding.rememberMe.isChecked());
+                    User user = new User("qwert", password, email, binding.rememberMe.isChecked());
                     entranceListener.onEntranceComplete(user);
 
                     // Закрытие фрагмента
@@ -90,12 +88,10 @@ public class EntranceFragment extends Fragment {
     }
 
     private boolean validateUserData() {
-        String lastName = binding.editTextLastName.getText().toString();
-        String firstName = binding.editTextFirstName.getText().toString();
+        String email = binding.editTextEmail.getText().toString();
         String password = binding.editTextPassword.getText().toString();
 
-        if (TextUtils.isEmpty(lastName) || TextUtils.isEmpty(firstName) ||
-                TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             // Проверка на пустые поля
             Toast.makeText(getContext(), "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show();
             return false;

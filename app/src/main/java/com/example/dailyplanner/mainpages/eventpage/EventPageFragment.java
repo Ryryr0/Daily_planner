@@ -1,66 +1,79 @@
 package com.example.dailyplanner.mainpages.eventpage;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.dailyplanner.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EventPageFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class EventPageFragment extends Fragment {
+import com.example.dailyplanner.AddEventFragment;
+import com.example.dailyplanner.activities.MainActivity;
+import com.example.dailyplanner.anxiliary.Event;
+import com.example.dailyplanner.anxiliary.EventListAdapter;
+import com.example.dailyplanner.databinding.FragmentEventPageBinding;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import java.util.ArrayList;
+import java.util.List;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class EventPageFragment extends Fragment implements EventListAdapter.OnEventClickListener {
 
-    public EventPageFragment() {
-        // Required empty public constructor
+    FragmentEventPageBinding binding;
+    private RecyclerView recyclerView;
+    private EventListAdapter eventListAdapter;
+    private List<Event> eventList;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        binding = FragmentEventPageBinding.inflate(inflater, container, false);
+
+        binding.buttonAddEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Логика добавления нового события
+                addNewEvent();
+            }
+        });
+
+        recyclerView = binding.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        eventList = new ArrayList<>();
+        eventListAdapter = new EventListAdapter(eventList, this);
+        recyclerView.setAdapter(eventListAdapter);
+
+        return binding.getRoot();
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EventPageFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EventPageFragment newInstance(String param1, String param2) {
-        EventPageFragment fragment = new EventPageFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    private void addNewEvent() {
+        AddEventFragment addEventFragment = new AddEventFragment();
+        addEventFragment.setOnEventCreatedListener(new AddEventFragment.OnEventCreatedListener() {
+            @Override
+            public void onEventCreated(Event event) {
+                Log.d("myTag", "Creating new event element");
+                eventList.add(event);
+                eventListAdapter.notifyItemInserted(eventList.size() - 1);
+            }
+        });
+
+        ((MainActivity) getActivity()).startFragment(addEventFragment);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public void onAddToTaskClick(int position) {
+        // Логика добавления события в список задач
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_event_page, container, false);
+    public void onDeleteClick(int position) {
+        // Логика удаления события
+        eventList.remove(position);
+        eventListAdapter.notifyItemRemoved(position);
     }
 }

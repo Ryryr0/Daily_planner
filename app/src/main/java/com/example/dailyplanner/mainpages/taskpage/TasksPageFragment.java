@@ -1,30 +1,20 @@
 package com.example.dailyplanner.mainpages.taskpage;
 
-import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import com.example.dailyplanner.R;
 import com.example.dailyplanner.anxiliary.Task;
-import com.example.dailyplanner.anxiliary.TaskListAdapter;
 import com.example.dailyplanner.databinding.FragmentTasksPageBinding;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
 
 public class TasksPageFragment extends Fragment implements CalendarFragment.OnCalendarListener {
     private FragmentTasksPageBinding binding;
@@ -32,6 +22,8 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
     private final int CONTAINER_VIEW_ID = 23232323;
     private final int CONTAINER_LIST_VIEW_ID = 34343434;
     private boolean buttonCalendarFlag = false;
+    private int year, month, dayOfMonth;
+    ArrayList<Task> taskArrayList = new ArrayList<>();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -65,6 +57,13 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
             }
         });
 
+        binding.createTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((OnCreateNewTask) getActivity()).onCreateNewTask(year, month, dayOfMonth);
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -81,6 +80,9 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
 
     @Override
     public void onCalendarSelected(int year, int month, int dayOfMonth, String dayOfWeek) {
+        this.year = year;
+        this.month = month;
+        this.dayOfMonth = dayOfMonth;
         createTaskBarFragment(year, month, dayOfMonth, dayOfWeek);
     }
 
@@ -164,13 +166,21 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
         String date = strMonth + "\n" + dayOfWeek + "\n" + dayOfMonth;
 
         // Take tasks from dataBase
-        ArrayList<Task> taskList = new ArrayList<>();
+        //
+        //
+        //
+        //
+        //
 
         FragmentTransaction fTrans;
         fTrans = getChildFragmentManager().beginTransaction();
         fTrans.replace(CONTAINER_LIST_VIEW_ID,
-                new TaskBarFragment(date, taskList));
+                new TaskBarFragment(date, taskArrayList));
         fTrans.addToBackStack(null);
         fTrans.commit();
+    }
+
+    public interface OnCreateNewTask {
+        void onCreateNewTask(int year, int month, int dayOfMonth);
     }
 }

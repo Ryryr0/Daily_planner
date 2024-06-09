@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "979561059270",
+    "firebase_url": "https://daily-planer-2-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "daily-planer-2",
+    "storage_bucket": "daily-planer-2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979561059270:android:b9a5fb6c8ac48186b218c7",
+        "android_client_info": {
+          "package_name": "com.example.dailyplanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2aWzdHbwLotXOGqYnOb2LTP-lyB81_MM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
