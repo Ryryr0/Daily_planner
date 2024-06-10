@@ -19,8 +19,19 @@ import androidx.fragment.app.Fragment;
 
 import com.example.dailyplanner.activities.InformationActivity;
 import com.example.dailyplanner.activities.RegistrationActivity;
+import com.example.dailyplanner.anxiliary.User;
 import com.example.dailyplanner.databinding.FragmentProfileBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -32,6 +43,9 @@ public class ProfileFragment extends Fragment {
     private Uri currentImageUri; // Сохраняем текущий Uri изображения
     private int k = 0;
     private final String MY_TAG = "myTag";
+    private final String USER_KEY = "Users";
+    private User user = new User();
+    private String userRecordKey;
 
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -51,6 +65,7 @@ public class ProfileFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
 
+        loadingUserData();
         binding.editPhotoButton.setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickImageLauncher.launch(intent);
@@ -121,6 +136,80 @@ public class ProfileFragment extends Fragment {
     }
 
     private void saveChangedData(){
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference(USER_KEY);
+        String uId = firebaseAuth.getUid();
+        FirebaseUser fireUser = FirebaseAuth.getInstance().getCurrentUser();
+        AuthCredential credential = EmailAuthProvider
+                .getCredential(user.getEmail(), user.getPassword());
+        fireUser.reauthenticate(credential);
+
+        user.setEmail(binding.emailEditText.getText().toString());
+        user.setFirstName(binding.fullNameEditText.getText().toString());
+        user.setPassword(binding.passwordEditText.getText().toString());
+
+        fireUser.reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        //Now change your email address \\
+                        //----------------Code for Changing Email Address----------\\
+                        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+                        fUser.updateEmail(user.getEmail())
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("profileLog", "email was changed");
+                                        }
+                                        else {
+                                            Log.d("profileLog", "email was not changed" + task.getException().getMessage());
+                                        }
+                                    }
+                                });
+                        //----------------------------------------------------------\\
+                        fUser.updatePassword(user.getPassword())
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("profileLog", "password was changed");
+                                        }
+                                    }
+                                });
+                    }
+                });
+        databaseReference.child(userRecordKey).setValue(user);
         Toast.makeText(getActivity(), "Data was saved", Toast.LENGTH_SHORT).show();
+    }
+
+    private void loadingUserData() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference(USER_KEY);
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("profileLog", "Start loading data");
+                for (DataSnapshot ds: snapshot.getChildren()) {
+                    userRecordKey = ds.getKey();
+                    user = ds.getValue(User.class);
+                    Log.d("profileLog", user.getId());
+                    if (user.getId().equals(firebaseAuth.getUid())) {
+                        binding.fullNameEditText.setText(user.getFirstName());
+                        binding.emailEditText.setText(user.getEmail());
+                        binding.passwordEditText.setText(user.getPassword());
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

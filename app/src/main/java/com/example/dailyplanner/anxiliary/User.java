@@ -4,6 +4,8 @@ public class User {
     private String id, firstName, password, email;
     boolean rememberMe;
 
+    public User(){}
+
     public User(String firstName, String password, String email, boolean rememberMe) {
         this.firstName = firstName;
         this.password = password;
