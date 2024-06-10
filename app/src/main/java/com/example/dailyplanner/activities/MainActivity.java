@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.dailyplanner.R;
-import com.example.dailyplanner.anxiliary.Task;
 import com.example.dailyplanner.databinding.ActivityMainBinding;
 import com.example.dailyplanner.mainpages.eventpage.EventPageFragment;
 import com.example.dailyplanner.mainpages.profile.ProfileFragment;
@@ -18,8 +17,7 @@ import com.example.dailyplanner.mainpages.taskpage.CreateTaskFragment;
 import com.example.dailyplanner.mainpages.taskpage.TasksPageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity implements TasksPageFragment.OnCreateNewTask,
-        CreateTaskFragment.OnCreateTask {
+public class MainActivity extends AppCompatActivity implements TasksPageFragment.OnCreateNewTask {
     private ActivityMainBinding binding;
     private TasksPageFragment taskPageFragment;
     private EventPageFragment eventPageFragment;
@@ -85,10 +83,5 @@ public class MainActivity extends AppCompatActivity implements TasksPageFragment
         transaction.replace(CONTAINER_VIEW_ID, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
-    }
-
-    @Override
-    public void onCreateTask(Task task) {
-        // Adding task into data base
     }
 }

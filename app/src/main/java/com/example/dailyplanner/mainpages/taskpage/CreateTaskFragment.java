@@ -11,19 +11,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 
-import com.example.dailyplanner.activities.MainActivity;
 import com.example.dailyplanner.anxiliary.Task;
 import com.example.dailyplanner.anxiliary.Types;
 import com.example.dailyplanner.databinding.FragmentCreateTaskBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class CreateTaskFragment extends Fragment {
 
     FragmentCreateTaskBinding binding;
     private Spinner spinnerType;
-    Task task;
+    private Task task;
+    private final String TASK_KEY = "Tasks";
 
     public CreateTaskFragment(int year, int month, int dayOfMonth){
         task = new Task("name", "description", Types.OTHER, year, month, dayOfMonth, false);
@@ -33,16 +35,6 @@ public class CreateTaskFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCreateTaskBinding.inflate(inflater, container, false);
-
-        // Настройка верхней панели
-        MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) {
-            ActionBar actionBar = activity.getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayHomeAsUpEnabled(true); // Показать кнопку "назад"
-                actionBar.setTitle("Создать задачу"); // Установить заголовок
-            }
-        }
 
         // Настройка селектора для типа задачи
         spinnerType = binding.spinnerType;
@@ -72,15 +64,22 @@ public class CreateTaskFragment extends Fragment {
                         break;
                 }
 
-                if (name.isEmpty() && description.isEmpty()) {
+                if (!name.isEmpty() && !description.isEmpty()) {
                     task.setName(name);
                     task.setDescription(description);
                     task.setType(type);
-                    ((OnCreateTask) getActivity()).onCreateTask(task);
+                    saveTask();
                 }
                 else {
                     Toast.makeText(getActivity(), "Заполните все поля", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        binding.buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager().popBackStack();
             }
         });
 
@@ -109,6 +108,15 @@ public class CreateTaskFragment extends Fragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void saveTask(){
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference(TASK_KEY);
+        task.setUserId(firebaseAuth.getUid());
+        databaseReference.push().setValue(task);
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     public interface OnCreateTask{

@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dailyplanner.AddEventFragment;
 import com.example.dailyplanner.activities.MainActivity;
 import com.example.dailyplanner.anxiliary.Event;
 import com.example.dailyplanner.anxiliary.EventListAdapter;

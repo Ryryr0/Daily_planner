@@ -38,6 +38,7 @@ android {
 
 dependencies {
 
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.google.firebase:firebase-database:21.0.0")
     implementation("com.google.firebase:firebase-core:21.1.1")

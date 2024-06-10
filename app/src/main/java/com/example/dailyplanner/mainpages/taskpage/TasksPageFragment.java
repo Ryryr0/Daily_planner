@@ -1,18 +1,30 @@
 package com.example.dailyplanner.mainpages.taskpage;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.dailyplanner.anxiliary.Task;
+import com.example.dailyplanner.anxiliary.TaskListAdapter;
 import com.example.dailyplanner.databinding.FragmentTasksPageBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -23,6 +35,11 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
     private final int CONTAINER_LIST_VIEW_ID = 34343434;
     private boolean buttonCalendarFlag = false;
     private int year, month, dayOfMonth;
+    private String date;
+    private String dayOfWeek;
+    TaskListAdapter taskListAdapter;
+    private final String TASK_KEY = "Tasks";
+    private Context myContext;
     ArrayList<Task> taskArrayList = new ArrayList<>();
 
     @Override
@@ -31,27 +48,26 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
         binding = FragmentTasksPageBinding.inflate(inflater, container, false);
 
         binding.fragmentContainerCalendar.setId(CONTAINER_VIEW_ID);
-        binding.fragmentContainerTaskPanel.setId(CONTAINER_LIST_VIEW_ID);
+        taskListAdapter = new TaskListAdapter(getContext(), taskArrayList);
         calendarFragment = new CalendarFragment();
+        FragmentTransaction fTrans;
+        fTrans = getChildFragmentManager().beginTransaction();
+        fTrans.add(CONTAINER_VIEW_ID, calendarFragment);
+        fTrans.addToBackStack(null);
+        fTrans.commit();
+        binding.fragmentContainerCalendar.setVisibility(View.GONE);
 
         setCurrentDate();
+        createTaskBarFragment(year, month, dayOfMonth, dayOfWeek);
 
         binding.buttonOpenCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!buttonCalendarFlag) {
-                    FragmentTransaction fTrans;
-                    fTrans = getChildFragmentManager().beginTransaction();
-                    fTrans.add(CONTAINER_VIEW_ID, calendarFragment);
-                    fTrans.addToBackStack(null);
-                    fTrans.commit();
+                    binding.fragmentContainerCalendar.setVisibility(View.VISIBLE);
                 }
                 else {
-                    FragmentTransaction fTrans;
-                    fTrans = getChildFragmentManager().beginTransaction();
-                    fTrans.remove(calendarFragment);
-                    fTrans.addToBackStack(null);
-                    fTrans.commit();
+                    binding.fragmentContainerCalendar.setVisibility(View.GONE);
                 }
                 buttonCalendarFlag = !buttonCalendarFlag;
             }
@@ -81,15 +97,19 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
     @Override
     public void onCalendarSelected(int year, int month, int dayOfMonth, String dayOfWeek) {
         this.year = year;
-        this.month = month;
+        this.month = month + 1;
         this.dayOfMonth = dayOfMonth;
         createTaskBarFragment(year, month, dayOfMonth, dayOfWeek);
+        Log.d("taskPage", "data was changed");
     }
 
     public void setCurrentDate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate localDate = LocalDate.now();
+            this.year = localDate.getYear();
+            this.month = localDate.getMonthValue();
+            this.dayOfMonth = localDate.getDayOfMonth();
             LocalDateTime localDateTime = LocalDateTime.now();
-            String dayOfWeek = "";
             switch (localDateTime.getDayOfWeek()) {
                 case SUNDAY:
                     dayOfWeek = "Вс";
@@ -113,12 +133,6 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
                     dayOfWeek = "Сб";
                     break;
             }
-            localDateTime = LocalDateTime.now();
-            createTaskBarFragment(
-                    localDateTime.getYear(),
-                    localDateTime.getMonthValue(),
-                    localDateTime.getDayOfMonth(),
-                    dayOfWeek);
         }
     }
 
@@ -163,24 +177,69 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
                 break;
 
         }
-        String date = strMonth + "\n" + dayOfWeek + "\n" + dayOfMonth;
+        date = strMonth + "\n" + dayOfWeek + "\n" + dayOfMonth;
+        Log.d("taskPage", "OnCreateTaskBar");
+        getTasksFromDatabase();
+    }
 
-        // Take tasks from dataBase
-        //
-        //
-        //
-        //
-        //
+    public void getTasksFromDatabase(){
+        taskArrayList.clear();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference(TASK_KEY);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("taskPage", "Start receiving tasks");
+                for (DataSnapshot ds: snapshot.getChildren()) {
+                    Task task = ds.getValue(Task.class);
+                    Log.d("taskPage", "Iteration of cycle");
+                    if (task.getUserId().equals(firebaseAuth.getUid()) && task.getDayOfMonth() == dayOfMonth
+                    && task.getMonth() == month && task.getYear() == year) {
+                        Log.d("taskPage", "Getting task " + task.getName());
+                        taskArrayList.add(task);
+                    }
+                }
+                Log.d("taskPage", date + year + " " + month + " " + dayOfMonth);
+                binding.textViewHeading.setText(date);
+                binding.listViewTasks.setAdapter(taskListAdapter);
+                taskListAdapter = new TaskListAdapter(getContext(), taskArrayList);
+                new Utility().setListViewHeightBasedOnItems(binding.listViewTasks);
+                Log.d("taskPag", "Date:" + year + " " + month + " " + dayOfMonth + " Items:" + taskListAdapter.getCount());
+            }
 
-        FragmentTransaction fTrans;
-        fTrans = getChildFragmentManager().beginTransaction();
-        fTrans.replace(CONTAINER_LIST_VIEW_ID,
-                new TaskBarFragment(date, taskArrayList));
-        fTrans.addToBackStack(null);
-        fTrans.commit();
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("taskPage", "Tasks receiving failed");
+            }
+        });
+        Log.d("taskPage", "End receiving tasks");
     }
 
     public interface OnCreateNewTask {
         void onCreateNewTask(int year, int month, int dayOfMonth);
+    }
+
+    public class Utility {
+        public void setListViewHeightBasedOnItems(ListView listView) {
+            ListAdapter listAdapter = listView.getAdapter();
+            if (listAdapter == null) {
+                // pre-condition
+                return;
+            }
+
+            int totalHeight = 0;
+            int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
+            for (int i = 0; i < listAdapter.getCount(); i++) {
+                View listItem = listAdapter.getView(i, null, listView);
+                listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+
+            ViewGroup.LayoutParams params = listView.getLayoutParams();
+            params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+            listView.setLayoutParams(params);
+            listView.requestLayout();
+        }
     }
 }

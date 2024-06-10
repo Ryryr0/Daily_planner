@@ -1,12 +1,8 @@
 package com.example.dailyplanner.anxiliary;
 
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.example.dailyplanner.R;
-
 public class Task {
+    private String userId;
     private String name;
     private String description;
     private Types type;
@@ -14,6 +10,8 @@ public class Task {
     private int month;
     private int dayOfMonth;
     private boolean isComplete;
+
+    public Task(){}
 
     public Task(String name, String description, Types type, int year, int month, int dayOfMonth, boolean isComplete) {
         this.name = name;
@@ -23,6 +21,26 @@ public class Task {
         this.month = month;
         this.dayOfMonth = dayOfMonth;
         this.isComplete = isComplete;
+        this.userId = "";
+    }
+
+    public Task(String userId, String name, String description, Types type, int year, int month, int dayOfMonth, boolean isComplete) {
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.year = year;
+        this.month = month;
+        this.dayOfMonth = dayOfMonth;
+        this.isComplete = isComplete;
+        this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {

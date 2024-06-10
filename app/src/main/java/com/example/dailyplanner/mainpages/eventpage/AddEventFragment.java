@@ -1,4 +1,4 @@
-package com.example.dailyplanner;
+package com.example.dailyplanner.mainpages.eventpage;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.dailyplanner.R;
 import com.example.dailyplanner.anxiliary.Event;
 import com.example.dailyplanner.databinding.FragmentAddEventBinding;
 

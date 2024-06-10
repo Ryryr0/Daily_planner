@@ -56,6 +56,7 @@ public class RegistrationActivity extends AppCompatActivity
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference(USER_KEY);
+        currentUser = null;
 
 //        DatabaseReference myRef = database.getReference("message");
 //        Map<String, String> test = new HashMap<>();
@@ -202,18 +203,20 @@ public class RegistrationActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        databaseReference.setValue(currentUser);
+        if (currentUser != null) {
+            databaseReference.push().setValue(currentUser);
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
         FirebaseUser cUser = firebaseAuth.getCurrentUser();
-//        if (cUser != null) {
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
-//            finish();
-//        }
+        if (cUser != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
 }
