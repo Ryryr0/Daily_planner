@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -14,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.dailyplanner.R;
 import com.example.dailyplanner.anxiliary.Task;
 import com.example.dailyplanner.anxiliary.TaskListAdapter;
 import com.example.dailyplanner.databinding.FragmentTasksPageBinding;
@@ -41,6 +43,7 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
     private final String TASK_KEY = "Tasks";
     private Context myContext;
     ArrayList<Task> taskArrayList = new ArrayList<>();
+    private boolean deleteModeFlag = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -48,7 +51,7 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
         binding = FragmentTasksPageBinding.inflate(inflater, container, false);
 
         binding.fragmentContainerCalendar.setId(CONTAINER_VIEW_ID);
-        taskListAdapter = new TaskListAdapter(getContext(), taskArrayList);
+//        taskListAdapter = new TaskListAdapter(getContext(), taskArrayList);
         calendarFragment = new CalendarFragment();
         FragmentTransaction fTrans;
         fTrans = getChildFragmentManager().beginTransaction();
@@ -77,6 +80,28 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
             @Override
             public void onClick(View v) {
                 ((OnCreateNewTask) getActivity()).onCreateNewTask(year, month, dayOfMonth);
+            }
+        });
+
+        binding.buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < binding.listViewTasks.getChildCount(); i++) {
+                    // Получаем вид каждого элемента
+                    View listItemView = binding.listViewTasks.getChildAt(i);
+
+                    // Находим кнопку в каждом элементе списка
+                    Button button = listItemView.findViewById(R.id.buttonItemDelete); // Здесь R.id.button - это идентификатор кнопки в вашем элементе списка
+
+                    // Если кнопка найдена, меняем ее видимость
+                    if (button != null) {
+                        if (button.getVisibility() == View.VISIBLE) {
+                            button.setVisibility(View.GONE);
+                        } else {
+                            button.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
             }
         });
 
@@ -184,27 +209,28 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
 
     public void getTasksFromDatabase(){
         taskArrayList.clear();
+        final boolean[] flag = {false};
+        Log.d("taskPage", "getTasksFromDatabase taskArrayList: " + taskArrayList.size());
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference(TASK_KEY);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d("taskPage", "Start receiving tasks");
+                if (flag[0]){
+                    return;
+                }
+                flag[0] = true;
+                Log.d("taskPage", "onDataChange Start receiving tasks");
                 for (DataSnapshot ds: snapshot.getChildren()) {
                     Task task = ds.getValue(Task.class);
-                    Log.d("taskPage", "Iteration of cycle");
                     if (task.getUserId().equals(firebaseAuth.getUid()) && task.getDayOfMonth() == dayOfMonth
                     && task.getMonth() == month && task.getYear() == year) {
                         Log.d("taskPage", "Getting task " + task.getName());
                         taskArrayList.add(task);
                     }
                 }
-                Log.d("taskPage", date + year + " " + month + " " + dayOfMonth);
-                binding.textViewHeading.setText(date);
-                binding.listViewTasks.setAdapter(taskListAdapter);
-                taskListAdapter = new TaskListAdapter(getContext(), taskArrayList);
-                new Utility().setListViewHeightBasedOnItems(binding.listViewTasks);
+                setTaskListView();
                 Log.d("taskPag", "Date:" + year + " " + month + " " + dayOfMonth + " Items:" + taskListAdapter.getCount());
             }
 
@@ -213,7 +239,6 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
                 Log.d("taskPage", "Tasks receiving failed");
             }
         });
-        Log.d("taskPage", "End receiving tasks");
     }
 
     public interface OnCreateNewTask {
@@ -241,5 +266,12 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
             listView.setLayoutParams(params);
             listView.requestLayout();
         }
+    }
+
+    public void setTaskListView() {
+        binding.textViewHeading.setText(date);
+        taskListAdapter = new TaskListAdapter(getContext(), taskArrayList);
+        binding.listViewTasks.setAdapter(taskListAdapter);
+        new Utility().setListViewHeightBasedOnItems(binding.listViewTasks);
     }
 }

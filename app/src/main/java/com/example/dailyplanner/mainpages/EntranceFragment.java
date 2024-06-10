@@ -100,6 +100,10 @@ public class EntranceFragment extends Fragment {
         return true;
     }
 
+    public boolean getRememberMe(){
+        return binding.rememberMe.isChecked();
+    }
+
     public interface EntranceListener {
         void onEntranceComplete(User user);
         void onEntranceRegistration();

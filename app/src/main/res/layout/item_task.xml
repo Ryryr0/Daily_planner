@@ -52,4 +52,13 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true" />
 
+    <Button
+        android:id="@+id/buttonItemDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Удалить"
+        android:backgroundTint="@color/red"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"/>
+
 </RelativeLayout>

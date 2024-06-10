@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +27,13 @@ public class TaskListAdapter extends BaseAdapter {
         ltInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    public void removeTask(int position) {
+        if (position >= 0 && position < objects.size()) {
+            objects.remove(position);
+            notifyDataSetChanged();
+        }
+    }
+
     @Override
     public int getCount() {
         return objects.size();
@@ -44,6 +52,7 @@ public class TaskListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
+
         if (view == null)
             view = ltInflater.inflate(R.layout.item_task, parent, false);
 
@@ -52,9 +61,31 @@ public class TaskListAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.titleTextView)).setText(task.getName());
         ((TextView) view.findViewById(R.id.descriptionTextView)).setText(task.getDescription());
         ((CheckBox) view.findViewById(R.id.checkBox)).setChecked(task.isComplete());
-        ((ImageView) view.findViewById(R.id.iconImageView)).setImageResource(R.drawable.ic_notifications_black_24dp);
+        ((ImageView) view.findViewById(R.id.iconImageView)).setImageResource(task.getType().getTitle());
+        ((Button) view.findViewById(R.id.buttonItemDelete)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeTask(position);
+            }
+        });
 
         return view;
+    }
+
+    public void onDeleteMode(boolean mode, ViewGroup parent){
+        for (int i = 0; i < objects.size(); i++){
+            if (mode){
+                ((Button) getView(i, null, parent)
+                        .findViewById(R.id.buttonItemDelete)).setVisibility(View.VISIBLE);
+            }else {
+                ((Button) getView(i, null, parent)
+                        .findViewById(R.id.buttonItemDelete)).setVisibility(View.GONE);
+            }
+        }
+    }
+
+    public ArrayList<Task> getTasks() {
+        return objects;
     }
 
     Task getTask(int position) {

@@ -69,6 +69,7 @@ public class CreateTaskFragment extends Fragment {
                     task.setDescription(description);
                     task.setType(type);
                     saveTask();
+                    getActivity().getSupportFragmentManager().popBackStack();
                 }
                 else {
                     Toast.makeText(getActivity(), "Заполните все поля", Toast.LENGTH_SHORT).show();
@@ -116,10 +117,5 @@ public class CreateTaskFragment extends Fragment {
         DatabaseReference databaseReference = database.getReference(TASK_KEY);
         task.setUserId(firebaseAuth.getUid());
         databaseReference.push().setValue(task);
-        getActivity().getSupportFragmentManager().popBackStack();
-    }
-
-    public interface OnCreateTask{
-        void onCreateTask(Task task);
     }
 }

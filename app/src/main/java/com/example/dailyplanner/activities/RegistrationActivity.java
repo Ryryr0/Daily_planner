@@ -23,8 +23,11 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 public class RegistrationActivity extends AppCompatActivity
@@ -154,6 +157,29 @@ public class RegistrationActivity extends AppCompatActivity
                     }
                     editor.commit();
 
+
+                    FirebaseUser cUser = firebaseAuth.getCurrentUser();
+                    if (cUser != null) {
+                        databaseReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                    User startUser = ds.getValue(User.class);
+                                    startUser.setRememberMe(entranceFragment.getRememberMe());
+                                    if (startUser.getId().equals(firebaseAuth.getUid())) {
+                                        databaseReference.child(ds.getKey()).setValue(startUser);
+                                        return;
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
@@ -213,9 +239,27 @@ public class RegistrationActivity extends AppCompatActivity
         super.onStart();
         FirebaseUser cUser = firebaseAuth.getCurrentUser();
         if (cUser != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot ds: snapshot.getChildren()) {
+                        User startUser = ds.getValue(User.class);
+                        if (startUser.getId().equals(firebaseAuth.getUid())) {
+                            if (startUser.isRememberMe()){
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                            return;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
     }
 

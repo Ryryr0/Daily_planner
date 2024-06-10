@@ -19,12 +19,15 @@
         <activity
             android:name=".activities.InformationActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light"/>
         <activity
             android:name=".activities.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="false"/>
         <activity
             android:name=".activities.RegistrationActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
