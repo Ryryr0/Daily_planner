@@ -35,6 +35,12 @@ public class Task {
         this.userId = userId;
     }
 
+    public boolean equals(Task task) {
+        return (this.name.equals(task.name) && this.description.equals(description)
+                && this.type == task.type && this.year == task.year && this.month == task.month
+                && this.dayOfMonth == task.dayOfMonth && this.userId.equals(task.userId));
+    }
+
     public String getUserId() {
         return userId;
     }
