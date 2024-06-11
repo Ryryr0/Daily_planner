@@ -36,6 +36,8 @@ public class EventListAdapter extends BaseAdapter {
     ArrayList<Event> objects;
     private final String EVENT_KEY = "Events";
     private final String TASK_KEY = "Tasks";
+    private final String USER_KEY = "Users";
+    private String role = "user";
 
     public EventListAdapter(Context context, ArrayList<Event> products) {
         ctx = context;
@@ -122,6 +124,30 @@ public class EventListAdapter extends BaseAdapter {
         Event event = getEvent(position);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference(USER_KEY);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("profileLog", "Start loading data");
+                for (DataSnapshot ds: snapshot.getChildren()) {
+                    User user = ds.getValue(User.class);
+                    if (user.getId().equals(firebaseAuth.getUid())) {
+                        role = user.getRole();
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        if (role.equals("user")){
+            ((Button) view.findViewById(R.id.button_delete_event)).setVisibility(View.GONE);
+        }
 
         ((TextView) view.findViewById(R.id.text_event_title)).setText(event.getTitle());
         ((TextView) view.findViewById(R.id.text_event_description)).setText(event.getDescription());

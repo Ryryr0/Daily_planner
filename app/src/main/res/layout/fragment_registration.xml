@@ -32,7 +32,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:hint="E-mail"
-        android:inputType="text" />
+        android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/editTextPassword"

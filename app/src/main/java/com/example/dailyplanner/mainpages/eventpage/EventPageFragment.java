@@ -13,7 +13,9 @@ import androidx.fragment.app.Fragment;
 import com.example.dailyplanner.activities.MainActivity;
 import com.example.dailyplanner.anxiliary.Event;
 import com.example.dailyplanner.anxiliary.EventListAdapter;
+import com.example.dailyplanner.anxiliary.User;
 import com.example.dailyplanner.databinding.FragmentEventPageBinding;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +30,8 @@ public class EventPageFragment extends Fragment {
     private EventListAdapter eventListAdapter;
     private final String EVENT_KEY = "Events";
     private ArrayList<Event> eventList;
+    private String role = "user";
+    private final String USER_KEY = "Users";
 
     @Nullable
     @Override
@@ -35,6 +39,32 @@ public class EventPageFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentEventPageBinding.inflate(inflater, container, false);
         eventList = new ArrayList<Event>();
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference(USER_KEY);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("profileLog", "Start loading data");
+                for (DataSnapshot ds: snapshot.getChildren()) {
+                    User user = ds.getValue(User.class);
+                    if (user.getId().equals(firebaseAuth.getUid())) {
+                        role = user.getRole();
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        if (role.equals("user")){
+            binding.buttonAddEvent.setVisibility(View.GONE);
+        }
 
         binding.buttonAddEvent.setOnClickListener(new View.OnClickListener() {
             @Override
