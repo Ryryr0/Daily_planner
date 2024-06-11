@@ -1,6 +1,5 @@
 package com.example.dailyplanner.mainpages.taskpage;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,16 +33,13 @@ public class TasksPageFragment extends Fragment implements CalendarFragment.OnCa
     private FragmentTasksPageBinding binding;
     private CalendarFragment calendarFragment;
     private final int CONTAINER_VIEW_ID = 23232323;
-    private final int CONTAINER_LIST_VIEW_ID = 34343434;
     private boolean buttonCalendarFlag = false;
     private int year, month, dayOfMonth;
     private String date;
     private String dayOfWeek;
     TaskListAdapter taskListAdapter;
     private final String TASK_KEY = "Tasks";
-    private Context myContext;
     ArrayList<Task> taskArrayList = new ArrayList<>();
-    private boolean deleteModeFlag = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

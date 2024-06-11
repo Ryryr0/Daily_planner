@@ -9,29 +9,32 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dailyplanner.activities.MainActivity;
 import com.example.dailyplanner.anxiliary.Event;
 import com.example.dailyplanner.anxiliary.EventListAdapter;
 import com.example.dailyplanner.databinding.FragmentEventPageBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class EventPageFragment extends Fragment implements EventListAdapter.OnEventClickListener {
+public class EventPageFragment extends Fragment {
 
     FragmentEventPageBinding binding;
-    private RecyclerView recyclerView;
     private EventListAdapter eventListAdapter;
-    private List<Event> eventList;
+    private final String EVENT_KEY = "Events";
+    private ArrayList<Event> eventList;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentEventPageBinding.inflate(inflater, container, false);
+        eventList = new ArrayList<Event>();
 
         binding.buttonAddEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,38 +44,48 @@ public class EventPageFragment extends Fragment implements EventListAdapter.OnEv
             }
         });
 
-        recyclerView = binding.recyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        eventList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(eventList, this);
-        recyclerView.setAdapter(eventListAdapter);
+        getEventsFromDatabase();
 
         return binding.getRoot();
     }
 
     private void addNewEvent() {
         AddEventFragment addEventFragment = new AddEventFragment();
-        addEventFragment.setOnEventCreatedListener(new AddEventFragment.OnEventCreatedListener() {
-            @Override
-            public void onEventCreated(Event event) {
-                Log.d("myTag", "Creating new event element");
-                eventList.add(event);
-                eventListAdapter.notifyItemInserted(eventList.size() - 1);
-            }
-        });
-
         ((MainActivity) getActivity()).startFragment(addEventFragment);
     }
 
-    @Override
-    public void onAddToTaskClick(int position) {
-        // Логика добавления события в список задач
-    }
+    public void getEventsFromDatabase(){
+        eventList.clear();
+        final boolean[] flag = {false};
+        Log.d("eventPage", "getEventsFromDatabase eventList: " + eventList.size());
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference(EVENT_KEY);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (flag[0]){
+                    return;
+                }
+                flag[0] = true;
+                Log.d("eventPage", "onDataChange Start receiving events");
+                for (DataSnapshot ds: snapshot.getChildren()) {
+                    Event event = ds.getValue(Event.class);
+                    Log.d("eventPage", "Getting event " + event.getTitle());
+                    eventList.add(event);
+                }
+                setEventListView();
+                Log.d("eventPage", "Items:" + eventList.size());
+            }
 
-    @Override
-    public void onDeleteClick(int position) {
-        // Логика удаления события
-        eventList.remove(position);
-        eventListAdapter.notifyItemRemoved(position);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("eventPage", "Events receiving failed");
+            }
+        });
+    }
+    
+    public void setEventListView() {
+        eventListAdapter = new EventListAdapter(getContext(), eventList);
+        binding.eventList.setAdapter(eventListAdapter);
     }
 }

@@ -155,18 +155,6 @@ public class TaskListAdapter extends BaseAdapter {
         return view;
     }
 
-    public void onDeleteMode(boolean mode, ViewGroup parent){
-        for (int i = 0; i < objects.size(); i++){
-            if (mode){
-                ((Button) getView(i, null, parent)
-                        .findViewById(R.id.buttonItemDelete)).setVisibility(View.VISIBLE);
-            }else {
-                ((Button) getView(i, null, parent)
-                        .findViewById(R.id.buttonItemDelete)).setVisibility(View.GONE);
-            }
-        }
-    }
-
     public ArrayList<Task> getTasks() {
         return objects;
     }
