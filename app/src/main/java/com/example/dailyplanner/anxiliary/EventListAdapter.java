@@ -126,6 +126,7 @@ public class EventListAdapter extends BaseAdapter {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference(USER_KEY);
+        final Button delButtonMin = ((Button) view.findViewById(R.id.button_delete_event));
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -134,6 +135,9 @@ public class EventListAdapter extends BaseAdapter {
                     User user = ds.getValue(User.class);
                     if (user.getId().equals(firebaseAuth.getUid())) {
                         role = user.getRole();
+                        if (role.equals("user")){
+                            delButtonMin.setVisibility(View.GONE);
+                        }
                         return;
                     }
                 }
@@ -145,9 +149,6 @@ public class EventListAdapter extends BaseAdapter {
             }
         });
 
-        if (role.equals("user")){
-            ((Button) view.findViewById(R.id.button_delete_event)).setVisibility(View.GONE);
-        }
 
         ((TextView) view.findViewById(R.id.text_event_title)).setText(event.getTitle());
         ((TextView) view.findViewById(R.id.text_event_description)).setText(event.getDescription());
